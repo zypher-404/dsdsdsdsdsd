@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZG Employee Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #151515;
+            --bg-surface: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --accent-primary: #404040;
+            --accent-secondary: #606060;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        /* Анимированный фон с частицами */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+                transform: translateY(-40px) translateX(0);
+            }
+            75% {
+                transform: translateY(-20px) translateX(-10px);
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: var(--bg-surface);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-primary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .add-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .add-btn:hover::before {
+            left: 100%;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            background: var(--accent-secondary);
+        }
+
+        .add-btn:active {
+            transform: translateY(0);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        .employees-section {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .employees-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-primary);
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .section-title i {
+            color: var(--text-primary);
+        }
+
+        .employees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .employee-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .employee-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent-primary);
+        }
+
+        .employee-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-secondary);
+        }
+
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .employee-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .employee-role {
+            background: var(--accent-primary);
+            color: var(--text-primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
+        .employee-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .employee-points {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: var(--accent-primary);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .points-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .points-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .employee-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-primary);
+            transform: scale(1.05);
+            border-color: var(--accent-secondary);
+            color: var(--text-primary);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .leaders-section, .stats-section, .quick-actions {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .leaders-section::before, .stats-section::before, .quick-actions::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-primary);
+        }
+
+        .leaderboard {
+            margin-top: 15px;
+        }
+
+        .leader-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: var(--bg-card);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .leader-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-secondary);
+        }
+
+        .leader-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            font-size: 14px;
+        }
+
+        .rank-1 {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .rank-2 {
+            background: var(--accent-primary);
+            color: white;
+            opacity: 0.8;
+        }
+
+        .rank-3 {
+            background: var(--accent-primary);
+            color: white;
+            opacity: 0.6;
+        }
+
+        .rank-other {
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--border-color);
+        }
+
+        .leader-info {
+            flex: 1;
+        }
+
+        .leader-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .leader-points {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-action {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            background: var(--accent-primary);
+            transform: translateY(-3px);
+            border-color: var(--accent-secondary);
+        }
+
+        .quick-action i {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .quick-action span {
+            display: block;
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border-color);
+            animation: modalAppear 0.4s ease;
+            position: relative;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-primary);
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-primary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: var(--accent-secondary);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-secondary);
+            color: var(--text-primary);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-primary);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 20px;
+            background: var(--bg-surface);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .employees-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid, .quick-actions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">ZG</div>
+                <div>
+                    <h1>Zypher Games</h1>
+                    <div class="subtitle">Employee Management Dashboard</div>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="add-btn" id="addEmployeeBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Employee
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="employees-section">
+                <h2 class="section-title"><i class="fas fa-users"></i> All Employees</h2>
+                <div class="employees-grid" id="employeesGrid">
+                    <!-- Employee cards will be added here -->
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="leaders-section">
+                    <h2 class="section-title"><i class="fas fa-trophy"></i> Top Leaders</h2>
+                    <div class="leaderboard" id="leaderboard">
+                        <!-- Leaders will be added here -->
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h2 class="section-title"><i class="fas fa-chart-bar"></i> Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalEmployees">0</div>
+                            <div class="stat-label">Total Employees</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalPoints">0</div>
+                            <div class="stat-label">Total Points</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="immuneEmployees">0</div>
+                            <div class="stat-label">With Immunity</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="avgPoints">0</div>
+                            <div class="stat-label">Average Points</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h2 class="section-title"><i class="fas fa-bolt"></i> Quick Actions</h2>
+                    <div class="quick-actions-grid">
+                        <div class="quick-action" id="addPointsToAll">
+                            <i class="fas fa-star"></i>
+                            <span>+1 Point to All</span>
+                        </div>
+                        <div class="quick-action" id="resetAllPoints">
+                            <i class="fas fa-redo"></i>
+                            <span>Reset Points</span>
+                        </div>
+                        <div class="quick-action" id="saveDataBtn">
+                            <i class="fas fa-save"></i>
+                            <span>Save Data</span>
+                        </div>
+                        <div class="quick-action" id="loadSampleData">
+                            <i class="fas fa-download"></i>
+                            <span>Load Sample</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Zypher Games &copy; 2023 | Employee Management Dashboard v2.0</p>
+        </footer>
+    </div>
+
+    <!-- Modal for adding/editing employees -->
+    <div class="modal" id="employeeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add Employee</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="employeeForm">
+                <input type="hidden" id="employeeId">
+                <div class="form-group">
+                    <label class="form-label" for="employeeName">Employee Name</label>
+                    <input type="text" class="form-input" id="employeeName" placeholder="Enter name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="employeeRole">Role (1-100)</label>
+                    <input type="number" class="form-input" id="employeeRole" min="1" max="100" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="employeeReprimands">Reprimands (0-3)</label>
+                    <input type="number" class="form-input" id="employeeReprimands" min="0" max="3" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="employeeWarnings">Warnings (0-3)</label>
+                    <input type="number" class="form-input" id="employeeWarnings" min="0" max="3" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="employeePoints">Points</label>
+                    <input type="number" class="form-input" id="employeePoints" min="0" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="employeeVK">VK Link</label>
+                    <input type="text" class="form-input" id="employeeVK" placeholder="https://vk.com/...">
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="employeeImmunity">
+                    <label class="form-label" for="employeeImmunity">Immunity</label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span>Data saved successfully!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create particles for background
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size and position
+                const size = Math.random() * 5 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+            
+            const employeesGrid = document.getElementById('employeesGrid');
+            const leaderboard = document.getElementById('leaderboard');
+            const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+            const employeeModal = document.getElementById('employeeModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const employeeForm = document.getElementById('employeeForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const toast = document.getElementById('toast');
+            const saveDataBtn = document.getElementById('saveDataBtn');
+            const addPointsToAll = document.getElementById('addPointsToAll');
+            const resetAllPoints = document.getElementById('resetAllPoints');
+            const loadSampleData = document.getElementById('loadSampleData');
+            
+            // Statistics elements
+            const totalEmployeesEl = document.getElementById('totalEmployees');
+            const totalPointsEl = document.getElementById('totalPoints');
+            const immuneEmployeesEl = document.getElementById('immuneEmployees');
+            const avgPointsEl = document.getElementById('avgPoints');
+            
+            let employees = JSON.parse(localStorage.getItem('zg_employees_dark')) || [];
+            let editingEmployeeId = null;
+            
+            // Load data from localStorage
+            function loadData() {
+                employeesGrid.innerHTML = '';
+                employees.forEach(employee => {
+                    addEmployeeCard(employee);
+                });
+                updateLeaderboard();
+                updateStats();
+            }
+            
+            // Add employee card
+            function addEmployeeCard(employee) {
+                const card = document.createElement('div');
+                card.className = 'employee-card';
+                card.dataset.id = employee.id;
+                
+                card.innerHTML = `
+                    <div class="employee-header">
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-role">Role: ${employee.role}</div>
+                    </div>
+                    <div class="employee-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Reprimands</div>
+                            <div class="detail-value">${employee.reprimands}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Warnings</div>
+                            <div class="detail-value">${employee.warnings}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Immunity</div>
+                            <div class="detail-value">${employee.immunity ? 'Yes' : 'No'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">VK</div>
+                            <div class="detail-value">${employee.vk ? 'Yes' : 'No'}</div>
+                        </div>
+                    </div>
+                    <div class="employee-points">
+                        <div class="points-value">${employee.points}</div>
+                        <div class="points-label">points</div>
+                    </div>
+                    <div class="employee-actions">
+                        <button class="action-btn add-point" title="Add point">
+                            <i class="fas fa-plus"></i> Point
+                        </button>
+                        <button class="action-btn edit-btn" title="Edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                employeesGrid.appendChild(card);
+                
+                // Event handlers for card buttons
+                const addPointBtn = card.querySelector('.add-point');
+                const editBtn = card.querySelector('.edit-btn');
+                const deleteBtn = card.querySelector('.delete');
+                
+                addPointBtn.addEventListener('click', function() {
+                    employee.points++;
+                    card.querySelector('.points-value').textContent = employee.points;
+                    updateEmployee(employee);
+                    updateLeaderboard();
+                    updateStats();
+                    
+                    // Add animation effect
+                    const pointsElement = card.querySelector('.points-value');
+                    pointsElement.style.transform = 'scale(1.3)';
+                    setTimeout(() => {
+                        pointsElement.style.transform = 'scale(1)';
+                    }, 300);
+                });
+                
+                editBtn.addEventListener('click', function() {
+                    openEditModal(employee);
+                });
+                
+                deleteBtn.addEventListener('click', function() {
+                    if (confirm(`Are you sure you want to delete ${employee.name}?`)) {
+                        employees = employees.filter(emp => emp.id !== employee.id);
+                        card.style.transform = 'translateX(100%)';
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.remove();
+                            updateLeaderboard();
+                            updateStats();
+                            saveToLocalStorage();
+                        }, 300);
+                    }
+                });
+            }
+            
+            // Open modal for editing
+            function openEditModal(employee) {
+                editingEmployeeId = employee.id;
+                modalTitle.textContent = 'Edit Employee';
+                
+                document.getElementById('employeeId').value = employee.id;
+                document.getElementById('employeeName').value = employee.name;
+                document.getElementById('employeeRole').value = employee.role;
+                document.getElementById('employeeReprimands').value = employee.reprimands;
+                document.getElementById('employeeWarnings').value = employee.warnings;
+                document.getElementById('employeePoints').value = employee.points;
+                document.getElementById('employeeVK').value = employee.vk || '';
+                document.getElementById('employeeImmunity').checked = employee.immunity;
+                
+                employeeModal.style.display = 'flex';
+            }
+            
+            // Update employee data
+            function updateEmployee(employee) {
+                const index = employees.findIndex(emp => emp.id === employee.id);
+                if (index !== -1) {
+                    employees[index] = employee;
+                    saveToLocalStorage();
+                }
+            }
+            
+            // Update leaderboard
+            function updateLeaderboard() {
+                leaderboard.innerHTML = '';
+                
+                // Sort employees by points (descending)
+                const sortedEmployees = [...employees].sort((a, b) => b.points - a.points);
+                
+                // Take top 5 employees
+                const topEmployees = sortedEmployees.slice(0, 5);
+                
+                topEmployees.forEach((employee, index) => {
+                    const leaderItem = document.createElement('div');
+                    leaderItem.className = 'leader-item';
+                    
+                    const rankClass = index === 0 ? 'rank-1' : 
+                                     index === 1 ? 'rank-2' : 
+                                     index === 2 ? 'rank-3' : 'rank-other';
+                    
+                    leaderItem.innerHTML = `
+                        <div class="leader-rank ${rankClass}">${index + 1}</div>
+                        <div class="leader-info">
+                            <div class="leader-name">${employee.name}</div>
+                            <div class="leader-points">${employee.points} points</div>
+                        </div>
+                    `;
+                    
+                    leaderboard.appendChild(leaderItem);
+                });
+            }
+            
+            // Update statistics
+            function updateStats() {
+                totalEmployeesEl.textContent = employees.length;
+                
+                let totalPoints = 0;
+                let immuneCount = 0;
+                
+                employees.forEach(employee => {
+                    totalPoints += employee.points;
+                    if (employee.immunity) immuneCount++;
+                });
+                
+                totalPointsEl.textContent = totalPoints;
+                immuneEmployeesEl.textContent = immuneCount;
+                avgPointsEl.textContent = employees.length > 0 ? Math.round(totalPoints / employees.length) : 0;
+            }
+            
+            // Save to localStorage
+            function saveToLocalStorage() {
+                localStorage.setItem('zg_employees_dark', JSON.stringify(employees));
+            }
+            
+            // Show toast notification
+            function showToast(message) {
+                toast.querySelector('span').textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Generate ID
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+            
+            // Event handlers
+            addEmployeeBtn.addEventListener('click', function() {
+                editingEmployeeId = null;
+                modalTitle.textContent = 'Add Employee';
+                employeeForm.reset();
+                document.getElementById('employeeImmunity').checked = false;
+                employeeModal.style.display = 'flex';
+            });
+            
+            closeModal.addEventListener('click', function() {
+                employeeModal.style.display = 'none';
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                employeeModal.style.display = 'none';
+            });
+            
+            employeeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const employeeData = {
+                    id: editingEmployeeId || generateId(),
+                    name: document.getElementById('employeeName').value,
+                    role: parseInt(document.getElementById('employeeRole').value),
+                    reprimands: parseInt(document.getElementById('employeeReprimands').value),
+                    warnings: parseInt(document.getElementById('employeeWarnings').value),
+                    points: parseInt(document.getElementById('employeePoints').value),
+                    vk: document.getElementById('employeeVK').value,
+                    immunity: document.getElementById('employeeImmunity').checked
+                };
+                
+                if (editingEmployeeId) {
+                    // Edit existing employee
+                    updateEmployee(employeeData);
+                    
+                    // Update card
+                    const card = document.querySelector(`.employee-card[data-id="${editingEmployeeId}"]`);
+                    if (card) {
+                        card.querySelector('.employee-name').textContent = employeeData.name;
+                        card.querySelector('.employee-role').textContent = `Role: ${employeeData.role}`;
+                        card.querySelector('.detail-item:nth-child(1) .detail-value').textContent = employeeData.reprimands;
+                        card.querySelector('.detail-item:nth-child(2) .detail-value').textContent = employeeData.warnings;
+                        card.querySelector('.detail-item:nth-child(3) .detail-value').textContent = employeeData.immunity ? 'Yes' : 'No';
+                        card.querySelector('.detail-item:nth-child(4) .detail-value').textContent = employeeData.vk ? 'Yes' : 'No';
+                        card.querySelector('.points-value').textContent = employeeData.points;
+                    }
+                    
+                    showToast('Employee data updated!');
+                } else {
+                    // Add new employee
+                    employees.push(employeeData);
+                    addEmployeeCard(employeeData);
+                    showToast('Employee added!');
+                }
+                
+                employeeModal.style.display = 'none';
+                updateLeaderboard();
+                updateStats();
+                saveToLocalStorage();
+            });
+            
+            saveDataBtn.addEventListener('click', function() {
+                saveToLocalStorage();
+                showToast('Data saved successfully!');
+            });
+            
+            addPointsToAll.addEventListener('click', function() {
+                employees.forEach(employee => {
+                    employee.points++;
+                });
+                loadData();
+                showToast('All employees received +1 point!');
+            });
+            
+            resetAllPoints.addEventListener('click', function() {
+                if (confirm('Are you sure you want to reset all points?')) {
+                    employees.forEach(employee => {
+                        employee.points = 0;
+                    });
+                    loadData();
+                    showToast('All points reset!');
+                }
+            });
+            
+            loadSampleData.addEventListener('click', function() {
+                if (employees.length === 0) {
+                    const sampleEmployees = [
+                        { id: generateId(), name: "Alex Johnson", role: 45, reprimands: 0, warnings: 1, points: 12, vk: "https://vk.com/alex", immunity: false },
+                        { id: generateId(), name: "Maria Rodriguez", role: 78, reprimands: 1, warnings: 0, points: 25, vk: "https://vk.com/maria", immunity: true },
+                        { id: generateId(), name: "David Smith", role: 32, reprimands: 0, warnings: 0, points: 8, vk: "https://vk.com/david", immunity: false },
+                        { id: generateId(), name: "Sophia Williams", role: 91, reprimands: 0, warnings: 2, points: 34, vk: "https://vk.com/sophia", immunity: true }
+                    ];
+                    
+                    employees = sampleEmployees;
+                    loadData();
+                    showToast('Sample data loaded!');
+                } else {
+                    alert('You already have employee data. Clear the list to load sample data.');
+                }
+            });
+            
+            // Load data on startup
+            loadData();
+        });
+    </script>
+</body>
+</html>
